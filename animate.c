@@ -1,24 +1,28 @@
+/*
+ * A program I made for fun and to practice C.
+ * Use this in the command line to see some printed
+ * animations!
+ *
+ * (C) Jasper Nelligan 2020
+ */
+
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
 #include <windows.h>
 
-// max size for input
 #define MAX_INPUT 32
 
 void diagonal_wave();
 void stickman_jump();
 void stickman_falling();
+void trumpet_playing();
 
-int main(int argc, char *argv[]){
+int main(){
     char input[MAX_INPUT];
     int val;
-
-//    while(true){
-//        stickman_falling();
-//        Sleep(2000);
-//    }
 
     printf("Hi there! ");
 
@@ -27,6 +31,9 @@ int main(int argc, char *argv[]){
                "1 - Diagonal Wave\n"
                "2 - Stickman Jumping\n"
                "3 - Stickman Falling\n"
+               "4 - Trumpet Playing\n"
+               "\n"
+               "5 - Exit Program\n"
                "\n"
                );
 
@@ -36,7 +43,7 @@ int main(int argc, char *argv[]){
         if (val == 0){
             // remove newline before printing
             strtok(input, "\n");
-            printf("'%s' is not a valid entry\n\n", input);
+            printf("'%s' is not a valid entry.\n\n", input);
             continue;
         }
 
@@ -53,21 +60,45 @@ int main(int argc, char *argv[]){
                 stickman_falling();
                 break;
 
+            case 4:
+                trumpet_playing();
+                break;
+
+            case 5:
+                exit(0);
+
             default:
                 printf("'%d' is not a valid entry.\n\n", val);
         }
     }
 }
 
-
 void diagonal_wave(){
     int i = 0, timeout = 450;
     int max;
     bool going_forward = true;
+    char input[MAX_INPUT];
 
-    printf("What should the max line length be?\n\n");
-    scanf("%d", &max);
-    while(getchar() != '\n');
+    printf("What should the max line length be? "
+           "(Type in a number greater than 0)\n\n");
+    while(true){
+        fgets(input, MAX_INPUT, stdin);
+        printf("\n");
+        max = atoi(input);
+        // atoi returns 0 of error, and so user will not be able to
+        // put in 0 as a valid answer
+        if (max == 0){
+            // remove newline before printing
+            strtok(input, "\n");
+            printf("'%s' is not a valid entry. (Type in a number greater than 0)\n\n", input);
+            continue;
+        }
+        else{
+            break;
+        }
+    }
+
+
     printf("\n");
     char animate_str[max+1];
     memset(animate_str, '\0', sizeof(animate_str));
@@ -216,11 +247,11 @@ void stickman_jump(){
         if(x_pos < 45){
             printf("\n\n\n\n\n\n\n\n\n");
         }
+        else{
+            printf("\n\n");
+        }
         Sleep(100);
     }
-
-    printf("\n\n");
-
 }
 
 void stickman_falling(){
@@ -250,7 +281,7 @@ void stickman_falling(){
         "                  |                \n",
         "                  |                \n",
         "                  |                \n",
-        "__________________|                \n",
+        "__________________|                \n"
     };
 
     while(y_pos > -16){
@@ -365,8 +396,172 @@ void stickman_falling(){
 
         Sleep(100);
     }//end while
+    printf("\n\n");
+}
+
+void trumpet_playing(){
+    int i, j;
+
+    // trumpet ends at 66
+    char animate_str[10][100] = {
+        "                                                               /|              \n",
+        "                    XYX XYX XYX  ,-.                         .' |              \n",
+        ",-.__________________H___H___H__(___)_____________________,-'   |              \n",
+        "| ||__________________________________________ ___ `._____      |              \n",
+        "`-'   / /           | | | | | |               |   `. \\    `-.   |              \n",
+        "     | |            | | _ | | |   ,-.         |    | |       `. |              \n",
+        "     | |    ________| ,'_)| | |__(___)________|_   | |         \\|              \n",
+        "     ' \\  .' ________).`-.|-| |_______________|_\\_.' / |                       \n",
+        "      \\ `-`._________)|`-'|-| |____________________.'@/                        \n",
+        "       `------------|_| |_| |_|-----------------'J `-'                         \n"
+    };
+
+    printf("\n");
+    for(i=0;i<10;i++){
+        printf("%s", animate_str[i]);
+    }
+    printf("\n\n\n\n\n\n\n\n\n");
+    Sleep(1000);
+
+    for(i=0;i<6;i++){
+        if(i == 0 || i == 3){
+            // push down left button
+            animate_str[1][20] = ' ';
+            animate_str[1][21] = ' ';
+            animate_str[1][22] = ' ';
+
+            // first half of sixteenth note
+            animate_str[2][70] = '|';
+            animate_str[3][70] = '|';
+            animate_str[4][68] = '(';
+            animate_str[4][69] = ')';
+
+            printf("\n");
+            for(j=0;j<10;j++){
+                printf("%s", animate_str[j]);
+            }
+            printf("\n\n\n\n\n\n\n\n\n");
+
+            Sleep(200);
+
+            // second
+            animate_str[1][71] = '_';
+            animate_str[1][72] = '_';
+            animate_str[2][71] = '-';
+            animate_str[2][72] = '-';
+            animate_str[2][73] = '|';
+            animate_str[3][73] = '|';
+            animate_str[4][72] = '(';
+            animate_str[4][73] = ')';
+        }
+        // animate single note
+        else if(i == 1 || i == 4){
+            // push down middle button
+            animate_str[1][24] = ' ';
+            animate_str[1][25] = ' ';
+            animate_str[1][26] = ' ';
+
+            animate_str[2][70] = '|';
+            animate_str[2][71] = '~';
+            animate_str[2][72] = '\'';
+            animate_str[3][70] = '|';
+            animate_str[4][68] = '(';
+            animate_str[4][69] = ')';
+        }
+        // eighth note
+        else if(i == 2 || i == 5){
+            // push down left button
+            animate_str[1][20] = ' ';
+            animate_str[1][21] = ' ';
+            animate_str[1][22] = ' ';
+
+            // first half
+            animate_str[1][70] = '|';
+            animate_str[2][70] = '|';
+            animate_str[3][68] = '(';
+            animate_str[3][69] = ')';
+
+
+            printf("\n");
+            for(j=0;j<10;j++){
+                printf("%s", animate_str[j]);
+            }
+            printf("\n\n\n\n\n\n\n\n\n");
+            Sleep(350);
+
+            // release down left button
+            animate_str[1][20] = 'X';
+            animate_str[1][21] = 'Y';
+            animate_str[1][22] = 'X';
+
+            // push down right button
+            animate_str[1][28] = ' ';
+            animate_str[1][29] = ' ';
+            animate_str[1][30] = ' ';
+
+            // second
+            animate_str[1][71] = '\\';
+            animate_str[2][72] = '\\';
+            animate_str[3][73] = '|';
+            animate_str[4][73] = '|';
+            animate_str[5][72] = '(';
+            animate_str[5][73] = ')';
+        }
+
+        printf("\n");
+        for(j=0;j<10;j++){
+            printf("%s", animate_str[j]);
+        }
+        printf("\n\n\n\n\n\n\n\n\n");
+        Sleep(1000);
+
+        // release buttons
+        j = 20;
+        while(j<31){
+            animate_str[1][j] = 'X';
+            animate_str[1][j+1] = 'Y';
+            animate_str[1][j+2] = 'X';
+            j += 4;
+        }
+
+        // clear for next note
+        animate_str[1][70] = ' ';
+        animate_str[1][71] = ' ';
+        animate_str[1][72] = ' ';
+        animate_str[2][70] = ' ';
+        animate_str[2][71] = ' ';
+        animate_str[2][72] = ' ';
+        animate_str[2][73] = ' ';
+        animate_str[3][68] = ' ';
+        animate_str[3][69] = ' ';
+        animate_str[3][70] = ' ';
+        animate_str[3][73] = ' ';
+        animate_str[4][68] = ' ';
+        animate_str[4][69] = ' ';
+        animate_str[4][72] = ' ';
+        animate_str[4][73] = ' ';
+        animate_str[5][72] = ' ';
+        animate_str[5][73] = ' ';
+
+        printf("\n");
+        for(j=0;j<10;j++){
+            printf("%s", animate_str[j]);
+        }
+        if(i < 5){
+            printf("\n\n\n\n\n\n\n\n\n");
+        }
+        else{
+            printf("\n\n");
+        }
+
+        if(i == 1 || i == 4){
+            Sleep(350);
+        }
+        else{
+            Sleep(1000);
+        };
+
+    }// end for
 
     printf("\n\n");
-
-
 }
