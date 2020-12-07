@@ -9,10 +9,16 @@
 
 void diagonal_wave();
 void stickman_jump();
+void stickman_falling();
 
 int main(int argc, char *argv[]){
     char input[MAX_INPUT];
     int val;
+
+//    while(true){
+//        stickman_falling();
+//        Sleep(2000);
+//    }
 
     printf("Hi there! ");
 
@@ -20,6 +26,7 @@ int main(int argc, char *argv[]){
         printf("What animation do you want to see? (Type in a number)\n\n"
                "1 - Diagonal Wave\n"
                "2 - Stickman Jumping\n"
+               "3 - Stickman Falling\n"
                "\n"
                );
 
@@ -40,6 +47,10 @@ int main(int argc, char *argv[]){
 
             case 2:
                 stickman_jump();
+                break;
+
+            case 3:
+                stickman_falling();
                 break;
 
             default:
@@ -93,11 +104,11 @@ void diagonal_wave(){
 }
 
 void stickman_jump(){
-    int j;
+    int i;
     int head_line = 3, arms_line = 4, body_line = 5, legs_line = 6;
     // keep track of leftmost part of stickmans position
-    int pos = 2;
-    int h_off_ground = 0;
+    int x_pos = 2;
+    int y_pos = 0;
 
     // box starts an index 22
     char animate_str[7][53] = {
@@ -110,104 +121,252 @@ void stickman_jump(){
         "__/_\\_________________|____|_______________________\n"
     };
 
-    while(pos<45){
+    while(x_pos<45){
         // moving forward
-        if(pos < 17 || (pos >= 20 && pos < 27) || pos >= 30 ){
-            animate_str[head_line][pos+1] = ' ';
-            animate_str[head_line][pos+2] = 'O';
-            animate_str[arms_line][pos] = ' ';
-            animate_str[arms_line][pos+1] = '/';
-            animate_str[arms_line][pos+2] = '|';
-            animate_str[arms_line][pos+3] = '\\';
-            animate_str[body_line][pos+1] = ' ';
-            animate_str[body_line][pos+2] = '|';
-            if(h_off_ground == 0){
-                animate_str[legs_line][pos] = '_';
-                animate_str[legs_line][pos+2] = '_';
+        if(x_pos < 17 || (x_pos >= 20 && x_pos < 27) || x_pos >= 30 ){
+            animate_str[head_line][x_pos+1] = ' ';
+            animate_str[head_line][x_pos+2] = 'O';
+            animate_str[arms_line][x_pos] = ' ';
+            animate_str[arms_line][x_pos+1] = '/';
+            animate_str[arms_line][x_pos+2] = '|';
+            animate_str[arms_line][x_pos+3] = '\\';
+            animate_str[body_line][x_pos+1] = ' ';
+            animate_str[body_line][x_pos+2] = '|';
+            if(y_pos == 0){
+                animate_str[legs_line][x_pos] = '_';
+                animate_str[legs_line][x_pos+2] = '_';
             }
             else{
-                animate_str[legs_line][pos] = ' ';
-                animate_str[legs_line][pos+2] = ' ';
+                animate_str[legs_line][x_pos] = ' ';
+                animate_str[legs_line][x_pos+2] = ' ';
             }
-            animate_str[legs_line][pos+1] = '/';
-            animate_str[legs_line][pos+3] = '\\';
+            animate_str[legs_line][x_pos+1] = '/';
+            animate_str[legs_line][x_pos+3] = '\\';
         }
         // jumping
-        else if(pos >= 17 && pos < 20){
-            animate_str[head_line][pos+1] = ' ';
+        else if(x_pos >= 17 && x_pos < 20){
+            animate_str[head_line][x_pos+1] = ' ';
             head_line--;
-            animate_str[head_line][pos+2] = 'O';
+            animate_str[head_line][x_pos+2] = 'O';
 
-            animate_str[arms_line][pos] = ' ';
-            animate_str[arms_line][pos+1] = ' ';
-            animate_str[arms_line][pos+2] = ' ';
+            animate_str[arms_line][x_pos] = ' ';
+            animate_str[arms_line][x_pos+1] = ' ';
+            animate_str[arms_line][x_pos+2] = ' ';
             arms_line--;
-            animate_str[arms_line][pos+1] = '/';
-            animate_str[arms_line][pos+2] = '|';
-            animate_str[arms_line][pos+3] = '\\';
+            animate_str[arms_line][x_pos+1] = '/';
+            animate_str[arms_line][x_pos+2] = '|';
+            animate_str[arms_line][x_pos+3] = '\\';
 
-            animate_str[body_line][pos+1] = ' ';
+            animate_str[body_line][x_pos+1] = ' ';
             body_line--;
-            animate_str[body_line][pos+2] = '|';
+            animate_str[body_line][x_pos+2] = '|';
 
-            if(h_off_ground == 0){
-                animate_str[legs_line][pos] = '_';
-                animate_str[legs_line][pos+1] = '_';
-                animate_str[legs_line][pos+2] = '_';
+            if(y_pos == 0){
+                animate_str[legs_line][x_pos] = '_';
+                animate_str[legs_line][x_pos+1] = '_';
+                animate_str[legs_line][x_pos+2] = '_';
             }
             else{
-                animate_str[legs_line][pos] = ' ';
-                animate_str[legs_line][pos+1] = ' ';
-                animate_str[legs_line][pos+2] = ' ';
+                animate_str[legs_line][x_pos] = ' ';
+                animate_str[legs_line][x_pos+1] = ' ';
+                animate_str[legs_line][x_pos+2] = ' ';
             }
             legs_line--;
-            animate_str[legs_line][pos+1] = '/';
-            animate_str[legs_line][pos+2] = ' ';
-            animate_str[legs_line][pos+3] = '\\';
+            animate_str[legs_line][x_pos+1] = '/';
+            animate_str[legs_line][x_pos+2] = ' ';
+            animate_str[legs_line][x_pos+3] = '\\';
 
-            h_off_ground++;
+            y_pos++;
         }
         // falling down
-        else if(26 <= pos < 30){
-            animate_str[legs_line][pos] = ' ';
-            animate_str[legs_line][pos+1] = ' ';
-            animate_str[legs_line][pos+2] = ' ';
+        else if(26 <= x_pos && x_pos < 30){
+            animate_str[legs_line][x_pos] = ' ';
+            animate_str[legs_line][x_pos+1] = ' ';
+            animate_str[legs_line][x_pos+2] = ' ';
             legs_line++;
-            animate_str[legs_line][pos+1] = '/';
-            animate_str[legs_line][pos+2] = ' ';
-            animate_str[legs_line][pos+3] = '\\';
+            animate_str[legs_line][x_pos+1] = '/';
+            animate_str[legs_line][x_pos+2] = ' ';
+            animate_str[legs_line][x_pos+3] = '\\';
 
-            animate_str[body_line][pos+1] = ' ';
+            animate_str[body_line][x_pos+1] = ' ';
             body_line++;
-            animate_str[body_line][pos+2] = '|';
+            animate_str[body_line][x_pos+2] = '|';
 
-            animate_str[arms_line][pos] = ' ';
-            animate_str[arms_line][pos+1] = ' ';
-            animate_str[arms_line][pos+2] = ' ';
+            animate_str[arms_line][x_pos] = ' ';
+            animate_str[arms_line][x_pos+1] = ' ';
+            animate_str[arms_line][x_pos+2] = ' ';
             arms_line++;
-            animate_str[arms_line][pos+1] = '/';
-            animate_str[arms_line][pos+2] = '|';
-            animate_str[arms_line][pos+3] = '\\';
+            animate_str[arms_line][x_pos+1] = '/';
+            animate_str[arms_line][x_pos+2] = '|';
+            animate_str[arms_line][x_pos+3] = '\\';
 
-            animate_str[head_line][pos+1] = ' ';
+            animate_str[head_line][x_pos+1] = ' ';
             head_line++;
-            animate_str[head_line][pos+2] = 'O';
+            animate_str[head_line][x_pos+2] = 'O';
 
-            h_off_ground--;
+            y_pos--;
         }
 
-        pos++;
+        x_pos++;
 
         printf("\n");
-        for(j=0;j<7;j++){
-            printf("%s", animate_str[j]);
+        for(i=0;i<7;i++){
+            printf("%s", animate_str[i]);
         }
-        if(pos < 45){
+        if(x_pos < 45){
             printf("\n\n\n\n\n\n\n\n\n");
         }
         Sleep(100);
     }
 
     printf("\n\n");
+
+}
+
+void stickman_falling(){
+    int i;
+    int head_line = 2, arms_line = 3, body_line = 4, legs_line = 5;
+    // keep track of leftmost part of stickmans position
+    int x_pos = 2;
+    int y_pos = 0;
+    bool falling = false;
+
+    // cliff starts at x_pos 19
+    char animate_str[18][37] = {
+        "                                   \n",
+        "                                   \n",
+        "   O                               \n",
+        "  /|\\                              \n",
+        "   |                               \n",
+        "__/_\\_____________                 \n",
+        "                  |                \n",
+        "                  |                \n",
+        "                  |                \n",
+        "                  |                \n",
+        "                  |                \n",
+        "                  |                \n",
+        "                  |                \n",
+        "                  |                \n",
+        "                  |                \n",
+        "                  |                \n",
+        "                  |                \n",
+        "__________________|                \n",
+    };
+
+    while(y_pos > -16){
+        // moving forward
+        if(x_pos < 20){
+            animate_str[head_line][x_pos+1] = ' ';
+            animate_str[head_line][x_pos+2] = 'O';
+            animate_str[arms_line][x_pos] = ' ';
+            animate_str[arms_line][x_pos+1] = '/';
+            animate_str[arms_line][x_pos+2] = '|';
+            animate_str[arms_line][x_pos+3] = '\\';
+            animate_str[body_line][x_pos+1] = ' ';
+            animate_str[body_line][x_pos+2] = '|';
+            if(x_pos < 17){
+                animate_str[legs_line][x_pos] = '_';
+                animate_str[legs_line][x_pos+2] = '_';
+            }
+            else if(x_pos >= 17 && x_pos < 18){
+                animate_str[legs_line][x_pos] = '_';
+                animate_str[legs_line][x_pos+2] = ' ';
+            }
+            else{
+                animate_str[legs_line][x_pos] = ' ';
+                animate_str[legs_line][x_pos+2] = ' ';
+
+            }
+            animate_str[legs_line][x_pos+1] = '/';
+            animate_str[legs_line][x_pos+3] = '\\';
+
+            x_pos++;
+        } //end if
+        // falling
+        else if(x_pos == 20){
+            // stickman raises exclamation point
+            if(!falling){
+                animate_str[head_line-1][x_pos+1] = '.';
+                animate_str[head_line-2][x_pos+1] = '|';
+                falling = true;
+
+                printf("\n");
+                for(i=0;i<18;i++){
+                    printf("%s", animate_str[i]);
+                }
+                Sleep(1000);
+
+                animate_str[head_line-1][x_pos+1] = ' ';
+                animate_str[head_line-2][x_pos+1] = ' ';
+            }
+            else{
+                if(legs_line < 17){
+                    animate_str[legs_line][x_pos] = ' ';
+                    animate_str[legs_line][x_pos+1] = ' ';
+                    animate_str[legs_line][x_pos+2] = ' ';
+                    legs_line++;
+                    animate_str[legs_line][x_pos] = '/';
+                    animate_str[legs_line][x_pos+1] = ' ';
+                    animate_str[legs_line][x_pos+2] = '\\';
+                }
+                // remove legs
+                else{
+                    animate_str[legs_line][x_pos] = ' ';
+                    animate_str[legs_line][x_pos+1] = ' ';
+                    animate_str[legs_line][x_pos+2] = ' ';
+                }
+
+                if(body_line < 17){
+                    animate_str[body_line][x_pos] = ' ';
+                    body_line++;
+                    animate_str[body_line][x_pos+1] = '|';
+                }
+                // remove body
+                else{
+                    animate_str[body_line][x_pos] = ' ';
+                }
+
+                if(arms_line < 17){
+                    animate_str[arms_line][x_pos] = ' ';
+                    arms_line++;
+                    animate_str[arms_line][x_pos+1] = '|';
+                }
+                // remove arms
+                else{
+                    animate_str[arms_line][x_pos] = ' ';
+                }
+
+                if(head_line < 17){
+                    animate_str[head_line][x_pos] = ' ';
+                    animate_str[head_line][x_pos+1] = ' ';
+                    animate_str[head_line][x_pos+2] = ' ';
+                    head_line++;
+                    animate_str[head_line][x_pos] = '\\';
+                    animate_str[head_line][x_pos+1] = 'O';
+                    animate_str[head_line][x_pos+2] = '/';
+                }
+                // remove head
+                else{
+                    animate_str[head_line][x_pos] = ' ';
+                    animate_str[head_line][x_pos+1] = ' ';
+                    animate_str[head_line][x_pos+2] = ' ';
+                }
+
+                y_pos--;
+            }// end else
+
+        }//end else if
+
+
+        printf("\n");
+        for(i=0;i<18;i++){
+            printf("%s", animate_str[i]);
+        }
+
+        Sleep(100);
+    }//end while
+
+    printf("\n\n");
+
 
 }
